@@ -31,7 +31,7 @@ export const mockProducts: Product[] = [
     image: 'https://images.pexels.com/photos/2872755/pexels-photo-2872755.jpeg?auto=compress&cs=tinysrgb&w=400',
     description: 'Fresh organic bananas, perfect for snacking or baking',
     retailers: [
-      { name: 'Asda', price: 1.20, originalPrice: 1.50, availability: 'in-stock', rating: 4.5, deliveryTime: 'Same day' },
+      { name: 'Royal Bee', price: 1.20, originalPrice: 1.50, availability: 'in-stock', rating: 4.5, deliveryTime: 'Same day' },
       { name: 'Tesco', price: 1.30, availability: 'in-stock', rating: 4.3, deliveryTime: 'Next day' },
       { name: 'Sainsbury\'s', price: 1.25, availability: 'limited', rating: 4.2, deliveryTime: 'Next day' },
       { name: 'Morrisons', price: 1.35, availability: 'in-stock', rating: 4.1, deliveryTime: '2-3 days' },
@@ -44,7 +44,7 @@ export const mockProducts: Product[] = [
     image: 'https://images.pexels.com/photos/236010/pexels-photo-236010.jpeg?auto=compress&cs=tinysrgb&w=400',
     description: 'Fresh whole milk, rich in calcium and protein',
     retailers: [
-      { name: 'Asda', price: 1.35, availability: 'in-stock', rating: 4.6, deliveryTime: 'Same day' },
+      { name: 'Royal Bee', price: 1.35, availability: 'in-stock', rating: 4.6, deliveryTime: 'Same day' },
       { name: 'Tesco', price: 1.40, availability: 'in-stock', rating: 4.4, deliveryTime: 'Next day' },
       { name: 'Sainsbury\'s', price: 1.45, availability: 'in-stock', rating: 4.3, deliveryTime: 'Next day' },
       { name: 'Morrisons', price: 1.38, availability: 'in-stock', rating: 4.2, deliveryTime: '2-3 days' },
@@ -57,7 +57,7 @@ export const mockProducts: Product[] = [
     image: 'https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=400',
     description: 'Artisan sourdough bread, freshly baked daily',
     retailers: [
-      { name: 'Asda', price: 1.80, availability: 'in-stock', rating: 4.7, deliveryTime: 'Same day' },
+      { name: 'Royal Bee', price: 1.80, availability: 'in-stock', rating: 4.7, deliveryTime: 'Same day' },
       { name: 'Tesco', price: 1.95, availability: 'in-stock', rating: 4.5, deliveryTime: 'Next day' },
       { name: 'Sainsbury\'s', price: 1.85, availability: 'limited', rating: 4.4, deliveryTime: 'Next day' },
       { name: 'Morrisons', price: 1.90, availability: 'in-stock', rating: 4.3, deliveryTime: '2-3 days' },
@@ -70,7 +70,7 @@ export const mockProducts: Product[] = [
     image: 'https://images.pexels.com/photos/162712/egg-white-food-protein-162712.jpeg?auto=compress&cs=tinysrgb&w=400',
     description: 'Fresh free-range eggs from happy hens',
     retailers: [
-      { name: 'Asda', price: 2.20, availability: 'in-stock', rating: 4.8, deliveryTime: 'Same day' },
+      { name: 'Royal Bee', price: 2.20, availability: 'in-stock', rating: 4.8, deliveryTime: 'Same day' },
       { name: 'Tesco', price: 2.30, availability: 'in-stock', rating: 4.6, deliveryTime: 'Next day' },
       { name: 'Sainsbury\'s', price: 2.25, availability: 'in-stock', rating: 4.5, deliveryTime: 'Next day' },
       { name: 'Morrisons', price: 2.35, availability: 'limited', rating: 4.4, deliveryTime: '2-3 days' },
@@ -83,7 +83,7 @@ export const mockProducts: Product[] = [
     image: 'https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=400',
     description: 'Premium durum wheat pasta, perfect for family meals',
     retailers: [
-      { name: 'Asda', price: 0.85, availability: 'in-stock', rating: 4.4, deliveryTime: 'Same day' },
+      { name: 'Royal Bee', price: 0.85, availability: 'in-stock', rating: 4.4, deliveryTime: 'Same day' },
       { name: 'Tesco', price: 0.90, availability: 'in-stock', rating: 4.3, deliveryTime: 'Next day' },
       { name: 'Sainsbury\'s', price: 0.88, availability: 'in-stock', rating: 4.2, deliveryTime: 'Next day' },
       { name: 'Morrisons', price: 0.92, availability: 'in-stock', rating: 4.1, deliveryTime: '2-3 days' },
@@ -96,7 +96,7 @@ export const mockProducts: Product[] = [
     image: 'https://images.pexels.com/photos/3688/food-dinner-lunch-chicken.jpg?auto=compress&cs=tinysrgb&w=400',
     description: 'Fresh chicken breast, high in protein',
     retailers: [
-      { name: 'Asda', price: 3.50, availability: 'in-stock', rating: 4.6, deliveryTime: 'Same day' },
+      { name: 'Royal Bee', price: 3.50, availability: 'in-stock', rating: 4.6, deliveryTime: 'Same day' },
       { name: 'Tesco', price: 3.65, availability: 'in-stock', rating: 4.5, deliveryTime: 'Next day' },
       { name: 'Sainsbury\'s', price: 3.55, availability: 'limited', rating: 4.4, deliveryTime: 'Next day' },
       { name: 'Morrisons', price: 3.70, availability: 'in-stock', rating: 4.3, deliveryTime: '2-3 days' },
@@ -107,8 +107,8 @@ export const mockProducts: Product[] = [
 export const mockRetailers: Retailer[] = [
   {
     id: '1',
-    name: 'Asda',
-    logo: '🛒',
+    name: 'Royal Bee',
+    logo: '🐝',
     description: 'Your local supermarket with unbeatable prices',
     rating: 4.5,
     deliveryOptions: ['Same day delivery', 'Click & Collect', 'Standard delivery']

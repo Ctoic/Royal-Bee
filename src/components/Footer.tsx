@@ -11,9 +11,9 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">A</span>
+                <span className="text-white font-bold">R</span>
               </div>
-              <span className="text-xl font-bold">Asda</span>
+              <span className="text-xl font-bold">Royal Bee</span>
             </div>
             <p className="text-gray-400 text-sm">
               Your local supermarket with unbeatable prices and quality products for every family.
@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-gray-400" />
-                <span className="text-gray-400">customer.services@asda.co.uk</span>
+                <span className="text-gray-400">customer.services@royalbee.co.uk</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4 text-gray-400" />
@@ -70,7 +70,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; 2024 Asda Stores Ltd. All rights reserved.</p>
+          <p>&copy; 2024 Royal Bee Ltd. All rights reserved.</p>
         </div>
       </div>
     </footer>

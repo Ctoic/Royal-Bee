@@ -167,7 +167,7 @@ const PriceComparison: React.FC = () => {
                         {product.retailers.map((retailer, index) => (
                           <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div className="flex items-center space-x-3">
-                              <div className="text-2xl">{retailer.name === 'Asda' ? '🛒' : retailer.name === 'Tesco' ? '🏪' : retailer.name === 'Sainsbury\'s' ? '🛍️' : '🏬'}</div>
+                              <div className="text-2xl">{retailer.name === 'Royal Bee' ? '🐝' : retailer.name === 'Tesco' ? '🏪' : retailer.name === 'Sainsbury\'s' ? '🛍️' : '🏬'}</div>
                               <div>
                                 <div className="font-medium">{retailer.name}</div>
                                 <div className="text-sm text-gray-600 flex items-center space-x-2">

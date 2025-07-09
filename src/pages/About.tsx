@@ -9,7 +9,7 @@ const About: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            About Asda
+            About Royal Bee
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Serving families across the UK since 1949 with unbeatable prices and quality products.
@@ -22,7 +22,7 @@ const About: React.FC = () => {
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Story</h2>
               <p className="text-gray-700 mb-4">
-                Founded in 1949 by brothers Peter and Fred Asquith, Asda has grown from a small Yorkshire retailer 
+                Founded in 1949 by brothers Peter and Fred Asquith, Royal Bee has grown from a small Yorkshire retailer 
                 into one of the UK's largest supermarket chains. Our commitment to providing quality products at 
                 unbeatable prices has remained unchanged for over 75 years.
               </p>
@@ -163,7 +163,7 @@ const About: React.FC = () => {
               <Users className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900">CEO: {companyInfo.structure.ceo}</h3>
-            <p className="text-gray-600">Leading Asda's strategic vision and operations</p>
+            <p className="text-gray-600">Leading Royal Bee's strategic vision and operations</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
