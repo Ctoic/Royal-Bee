@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, User, Search, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
+import { getProfile } from '../api';
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { getItemCount } = useCart();
-  const { user, logout } = useAuth();
+  const [user, setUser] = useState<{ name: string } | null>(null);
   const location = useLocation();
   const itemCount = getItemCount();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      getProfile(token)
+        .then(profile => setUser(profile))
+        .catch(() => setUser(null));
+    } else {
+      setUser(null);
+    }
+  }, []);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -86,7 +97,10 @@ const Header: React.FC = () => {
                       Profile
                     </Link>
                     <button
-                      onClick={logout}
+                      onClick={() => {
+                        localStorage.removeItem('token');
+                        setUser(null);
+                      }}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Logout
