@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { registerUser, loginUser } from '../api';
 
 const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,7 +14,6 @@ const Login: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,30 +22,26 @@ const Login: React.FC = () => {
     setErrors({});
 
     try {
-      let success = false;
-      
       if (isLogin) {
-        success = await login(formData.email, formData.password);
-        if (!success) {
-          setErrors({ general: 'Invalid email or password' });
-        }
+        // Login
+        const data = await loginUser(formData.email, formData.password);
+        localStorage.setItem('token', data.access_token);
+        navigate('/');
       } else {
+        // Registration
         if (!formData.name.trim()) {
           setErrors({ name: 'Name is required' });
           setIsLoading(false);
           return;
         }
-        success = await register(formData.email, formData.password, formData.name);
-        if (!success) {
-          setErrors({ general: 'Registration failed. Please try again.' });
-        }
-      }
-
-      if (success) {
+        await registerUser(formData.email, formData.name, formData.password);
+        // Auto-login after registration
+        const data = await loginUser(formData.email, formData.password);
+        localStorage.setItem('token', data.access_token);
         navigate('/');
       }
-    } catch (error) {
-      setErrors({ general: 'An error occurred. Please try again.' });
+    } catch (error: any) {
+      setErrors({ general: error.message || 'An error occurred. Please try again.' });
     } finally {
       setIsLoading(false);
     }
