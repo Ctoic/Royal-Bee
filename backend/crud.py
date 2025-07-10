@@ -21,3 +21,29 @@ def authenticate_user(db: Session, email: str, password: str):
 
 def get_products(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Product).offset(skip).limit(limit).all()
+
+def create_order(db: Session, order: schemas.OrderCreate):
+    db_order = models.Order(
+        user_id=order.user_id,
+        date=order.date,
+        total=order.total,
+        payment=order.payment,
+        address=order.address
+    )
+    db.add(db_order)
+    db.flush()  # To get db_order.id before adding items
+    for item in order.items:
+        db_item = models.OrderItem(
+            order_id=db_order.id,
+            product_name=item.product_name,
+            quantity=item.quantity,
+            retailer=item.retailer,
+            price=item.price
+        )
+        db.add(db_item)
+    db.commit()
+    db.refresh(db_order)
+    return db_order
+
+def get_orders_by_user(db: Session, user_id: int):
+    return db.query(models.Order).filter(models.Order.user_id == user_id).all()

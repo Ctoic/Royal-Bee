@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { registerUser, loginUser } from '../api';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '../context/AuthContext';
+
+const GOOGLE_CLIENT_ID = '703252490733-uq57cmueur4g86cp8v2cvidu9mbdj9aq.apps.googleusercontent.com'; // Replace with your real client ID
 
 const Login: React.FC = () => {
+  const { googleLogin } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -101,7 +106,6 @@ const Login: React.FC = () => {
                   Full Name
                 </label>
                 <div className="mt-1 relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     id="name"
                     name="name"
@@ -124,7 +128,6 @@ const Login: React.FC = () => {
                 Email Address
               </label>
               <div className="mt-1 relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   id="email"
                   name="email"
@@ -146,7 +149,6 @@ const Login: React.FC = () => {
                 Password
               </label>
               <div className="mt-1 relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   id="password"
                   name="password"
@@ -162,7 +164,11 @@ const Login: React.FC = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <span className="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-off w-5 h-5"><path d="m1 1 22 22"/><path d="M10.58 2L5.24 6.36"/><path d="M23 1L1 23"/><path d="M16.74 3.64"/><path d="M21 6"/><path d="M14.82 11.18"/><path d="M18.36 7.64"/><path d="M19 6"/><path d="M10.58 17.8"/><path d="M14.82 13.58"/><path d="M18.36 17.14"/><path d="M19 18"/><path d="M10.58 10.2"/><path d="M14.82 5.96"/><path d="M18.36 9.5"/><path d="M19 18"/><path d="M10.58 10.2"/><path d="M14.82 5.96"/><path d="M18.36 9.5"/></svg>
+                  </span> : <span className="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye w-5 h-5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8"/><path d="M12 15c3 0 5-1 5-4s-2-4-5-4-5 1-5 4 2 4 5 4"/><path d="M12 15c3 0 5-1 5-4s-2-4-5-4-5 1-5 4 2 4 5 4"/></svg>
+                  </span>}
                 </button>
               </div>
               {errors.password && (

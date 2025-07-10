@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { googleLogout } from '@react-oauth/google';
 
 interface User {
   id: string;
@@ -13,6 +14,7 @@ interface AuthContextType {
   register: (email: string, password: string, name: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
+  googleLogin: (profile: { sub: string; email: string; name: string }) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,7 +28,11 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Restore user from localStorage if present
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
 
   const login = async (email: string, password: string): Promise<boolean> => {
     // Mock authentication - in real app, this would call an API
@@ -38,9 +44,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         joinDate: new Date().toISOString()
       };
       setUser(mockUser);
+      localStorage.setItem('user', JSON.stringify(mockUser));
       return true;
     }
     return false;
+  };
+
+  // Google login handler
+  const googleLogin = (profile: { sub: string; email: string; name: string }) => {
+    const googleUser: User = {
+      id: profile.sub,
+      email: profile.email,
+      name: profile.name,
+      joinDate: new Date().toISOString()
+    };
+    setUser(googleUser);
+    localStorage.setItem('user', JSON.stringify(googleUser));
   };
 
   const register = async (email: string, password: string, name: string): Promise<boolean> => {
@@ -53,6 +72,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         joinDate: new Date().toISOString()
       };
       setUser(mockUser);
+      localStorage.setItem('user', JSON.stringify(mockUser));
       return true;
     }
     return false;
@@ -60,6 +80,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('user');
+    googleLogout();
   };
 
   return (
@@ -68,7 +90,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       login,
       register,
       logout,
-      isAuthenticated: !!user
+      isAuthenticated: !!user,
+      googleLogin // add googleLogin to context
     }}>
       {children}
     </AuthContext.Provider>

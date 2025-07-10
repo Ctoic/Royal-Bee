@@ -10,6 +10,8 @@ import About from './pages/About';
 import Sustainability from './pages/Sustainability';
 import Cart from './pages/Cart';
 import Login from './pages/Login';
+import Checkout from './pages/Checkout';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -25,7 +27,9 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/sustainability" element={<Sustainability />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/profile" element={<Profile />} />
               </Routes>
             </main>
             <Footer />
