@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
@@ -43,6 +43,14 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @app.get("/products", response_model=List[schemas.ProductOut])
 def list_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_products(db, skip=skip, limit=limit)
+
+@app.post("/api/orders", response_model=schemas.OrderOut)
+def create_order(order: schemas.OrderCreate = Body(...), db: Session = Depends(get_db)):
+    return crud.create_order(db, order)
+
+@app.get("/api/orders", response_model=List[schemas.OrderOut])
+def get_orders(userId: int, db: Session = Depends(get_db)):
+    return crud.get_orders_by_user(db, userId)
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(

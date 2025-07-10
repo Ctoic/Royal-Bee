@@ -56,3 +56,34 @@ class CartItemOut(CartItemBase):
     id: int
     class Config:
         orm_mode = True
+
+class OrderItemBase(BaseModel):
+    product_name: str
+    quantity: int
+    retailer: str
+    price: float
+
+class OrderItemCreate(OrderItemBase):
+    pass
+
+class OrderItemOut(OrderItemBase):
+    id: int
+    class Config:
+        orm_mode = True
+
+class OrderBase(BaseModel):
+    date: str
+    total: float
+    payment: str
+    address: str
+
+class OrderCreate(OrderBase):
+    items: List[OrderItemCreate]
+    user_id: int
+
+class OrderOut(OrderBase):
+    id: int
+    items: List[OrderItemOut]
+    user_id: int
+    class Config:
+        orm_mode = True
