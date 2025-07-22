@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { submitOrder } from '../api';
 
 const paymentOptions = [
   'Credit Card',
@@ -11,7 +12,7 @@ const paymentOptions = [
 
 const Checkout: React.FC = () => {
   const { items, getTotalPrice, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -46,13 +47,7 @@ const Checkout: React.FC = () => {
           price: item.price,
         })),
       };
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderPayload),
-      });
-      if (!response.ok) throw new Error('Failed to place order');
-      const data = await response.json();
+      const data = await submitOrder(orderPayload, token || undefined);
       setOrder(data); // Save order for confirmation screen
       clearCart();
     } catch (err: any) {
@@ -69,8 +64,10 @@ const Checkout: React.FC = () => {
         <h2>Order Confirmed!</h2>
         <div><strong>Order ID:</strong> {order.id}</div>
         <div><strong>Date:</strong> {new Date(order.date).toLocaleString()}</div>
-        <div><strong>Payment:</strong> {order.payment}</div>
-        <div><strong>Address:</strong> {order.address}</div>
+        <div><strong>Payment Method:</strong> {order.payment}</div>
+        <div><strong>Billing Name:</strong> {form.name}</div>
+        <div><strong>Billing Address:</strong> {order.address}</div>
+        <div><strong>Phone:</strong> {form.phone}</div>
         <div><strong>Total:</strong> ${order.total.toFixed(2)}</div>
         <h3>Items</h3>
         <ul>

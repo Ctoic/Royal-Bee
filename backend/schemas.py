@@ -18,12 +18,14 @@ class ProductBase(BaseModel):
     category: str
     image: Optional[str] = None
     description: Optional[str] = None
+    price: Optional[float] = None
 
 class ProductCreate(ProductBase):
     pass
 
 class ProductOut(ProductBase):
     id: int
+    retailers: Optional[List['RetailerOut']] = None
     class Config:
         orm_mode = True
 
@@ -34,6 +36,7 @@ class RetailerBase(BaseModel):
     rating: Optional[float] = None
     delivery_options: Optional[str] = None
     product_id: int
+    price: Optional[float] = None
 
 class RetailerCreate(RetailerBase):
     pass
@@ -87,3 +90,5 @@ class OrderOut(OrderBase):
     user_id: int
     class Config:
         orm_mode = True
+
+ProductOut.update_forward_refs()
