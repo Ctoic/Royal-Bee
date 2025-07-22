@@ -1,9 +1,11 @@
 import React from 'react';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const Cart: React.FC = () => {
   const { items, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
+  const navigate = useNavigate();
 
   const handleQuantityChange = (productId: string, retailer: string, newQuantity: number) => {
     if (newQuantity < 1) {
@@ -14,8 +16,7 @@ const Cart: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    alert('Checkout functionality would be implemented here. Thank you for shopping with us!');
-    clearCart();
+    navigate('/checkout');
   };
 
   if (items.length === 0) {

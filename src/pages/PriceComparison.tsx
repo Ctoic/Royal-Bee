@@ -1,7 +1,28 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Filter, Star, ShoppingCart, Truck, AlertCircle } from 'lucide-react';
-import { mockProducts, Product } from '../data/mockData';
+import { getProducts } from '../api';
 import { useCart } from '../context/CartContext';
+
+interface Retailer {
+  id?: number;
+  name: string;
+  price?: number;
+  logo?: string;
+  description?: string;
+  rating?: number;
+  delivery_options?: string;
+  product_id?: number;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  image?: string;
+  description?: string;
+  price?: number;
+  retailers?: Retailer[];
+}
 
 const PriceComparison: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,11 +30,27 @@ const PriceComparison: React.FC = () => {
   const [sortBy, setSortBy] = useState('price-low');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { addToCart } = useCart();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const categories = ['all', 'Fresh Produce', 'Dairy', 'Bakery', 'Meat', 'Pantry'];
 
+  useEffect(() => {
+    setLoading(true);
+    getProducts()
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError('Failed to fetch products');
+        setLoading(false);
+      });
+  }, []);
+
   const filteredProducts = useMemo(() => {
-    let filtered = mockProducts;
+    let filtered = products;
 
     if (searchTerm) {
       filtered = filtered.filter(product =>
@@ -27,9 +64,9 @@ const PriceComparison: React.FC = () => {
     }
 
     return filtered.sort((a, b) => {
-      const aPrice = Math.min(...a.retailers.map(r => r.price));
-      const bPrice = Math.min(...b.retailers.map(r => r.price));
-      
+      // If retailers are present, sort by best price, else fallback
+      const aPrice = a.retailers ? Math.min(...a.retailers.map(r => r.price || 0)) : 0;
+      const bPrice = b.retailers ? Math.min(...b.retailers.map(r => r.price || 0)) : 0;
       switch (sortBy) {
         case 'price-low':
           return aPrice - bPrice;
@@ -41,7 +78,7 @@ const PriceComparison: React.FC = () => {
           return 0;
       }
     });
-  }, [searchTerm, selectedCategory, sortBy]);
+  }, [searchTerm, selectedCategory, sortBy, products]);
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
@@ -69,9 +106,17 @@ const PriceComparison: React.FC = () => {
     }
   };
 
-  const handleAddToCart = (product: Product, retailer: any) => {
-    addToCart(product, retailer.name, retailer.price);
+  const handleAddToCart = (product: Product, retailer?: Retailer) => {
+    if (!retailer) return;
+    addToCart(product as any, retailer.name, retailer.price || 0);
   };
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading products...</div>;
+  }
+  if (error) {
+    return <div className="p-8 text-center text-red-600">{error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -129,8 +174,8 @@ const PriceComparison: React.FC = () => {
         {/* Products Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {filteredProducts.map((product) => {
-            const bestPrice = Math.min(...product.retailers.map(r => r.price));
-            const bestRetailer = product.retailers.find(r => r.price === bestPrice);
+            const bestPrice = product.retailers && product.retailers.length > 0 ? Math.min(...product.retailers.map(r => r.price || 0)) : 0;
+            const bestRetailer = product.retailers && product.retailers.length > 0 ? product.retailers.find(r => (r.price || 0) === bestPrice) : undefined;
 
             return (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
@@ -148,7 +193,7 @@ const PriceComparison: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="text-2xl font-bold text-green-600">£{bestPrice.toFixed(2)}</span>
-                          <span className="text-sm text-gray-600 ml-2">at {bestRetailer?.name}</span>
+                          <span className="text-sm text-gray-600 ml-2">{bestRetailer ? `at ${bestRetailer.name}` : ''}</span>
                         </div>
                         <button
                           onClick={() => setSelectedProduct(selectedProduct?.id === product.id ? null : product)}
@@ -160,19 +205,19 @@ const PriceComparison: React.FC = () => {
                     </div>
                   </div>
 
-                  {selectedProduct?.id === product.id && (
+                  {selectedProduct?.id === product.id && product.retailers && (
                     <div className="mt-6 border-t pt-6">
                       <h4 className="text-lg font-semibold mb-4">Price Comparison</h4>
                       <div className="space-y-3">
-                        {product.retailers.map((retailer, index) => (
+                        {product.retailers.slice(0, 4).map((retailer, index) => (
                           <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div className="flex items-center space-x-3">
                               <div className="text-2xl">{retailer.name === 'Royal Bee' ? '🐝' : retailer.name === 'Tesco' ? '🏪' : retailer.name === 'Sainsbury\'s' ? '🛍️' : '🏬'}</div>
                               <div>
                                 <div className="font-medium">{retailer.name}</div>
                                 <div className="text-sm text-gray-600 flex items-center space-x-2">
-                                  <span className={getAvailabilityColor(retailer.availability)}>
-                                    {getAvailabilityIcon(retailer.availability)} {retailer.availability.replace('-', ' ')}
+                                  <span className={getAvailabilityColor(retailer.delivery_options || '')}>
+                                    {getAvailabilityIcon(retailer.delivery_options || '')} {retailer.delivery_options?.replace('-', ' ')}
                                   </span>
                                   <span>•</span>
                                   <span className="flex items-center">
@@ -184,20 +229,17 @@ const PriceComparison: React.FC = () => {
                             </div>
                             <div className="text-right">
                               <div className="flex items-center space-x-2">
-                                <span className="text-lg font-bold text-gray-900">£{retailer.price.toFixed(2)}</span>
-                                {retailer.originalPrice && (
-                                  <span className="text-sm text-gray-500 line-through">£{retailer.originalPrice.toFixed(2)}</span>
-                                )}
+                                <span className="text-lg font-bold text-gray-900">£{retailer.price?.toFixed(2) || ''}</span>
                               </div>
                               <div className="text-sm text-gray-600 flex items-center">
                                 <Truck className="w-3 h-3 mr-1" />
-                                {retailer.deliveryTime}
+                                {retailer.delivery_options}
                               </div>
                               <button
                                 onClick={() => handleAddToCart(product, retailer)}
-                                disabled={retailer.availability === 'out-of-stock'}
+                                disabled={retailer.delivery_options === 'out-of-stock'}
                                 className={`mt-2 px-3 py-1 text-sm font-medium rounded-lg transition-colors ${
-                                  retailer.availability === 'out-of-stock'
+                                  retailer.delivery_options === 'out-of-stock'
                                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                                     : 'bg-green-600 text-white hover:bg-green-700'
                                 }`}
@@ -216,7 +258,6 @@ const PriceComparison: React.FC = () => {
             );
           })}
         </div>
-
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />

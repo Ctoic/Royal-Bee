@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 const GOOGLE_CLIENT_ID = '703252490733-uq57cmueur4g86cp8v2cvidu9mbdj9aq.apps.googleusercontent.com'; // Replace with your real client ID
 
 const Login: React.FC = () => {
-  const { googleLogin } = useAuth();
+  const { googleLogin, login } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,9 +29,12 @@ const Login: React.FC = () => {
     try {
       if (isLogin) {
         // Login
-        const data = await loginUser(formData.email, formData.password);
-        localStorage.setItem('token', data.access_token);
-        navigate('/');
+        const success = await login(formData.email, formData.password);
+        if (success) {
+          navigate('/');
+        } else {
+          setErrors({ general: 'Login failed. Please try again.' });
+        }
       } else {
         // Registration
         if (!formData.name.trim()) {
@@ -41,9 +44,12 @@ const Login: React.FC = () => {
         }
         await registerUser(formData.email, formData.name, formData.password);
         // Auto-login after registration
-        const data = await loginUser(formData.email, formData.password);
-        localStorage.setItem('token', data.access_token);
-        navigate('/');
+        const success = await login(formData.email, formData.password);
+        if (success) {
+          navigate('/');
+        } else {
+          setErrors({ general: 'Registration succeeded but login failed.' });
+        }
       }
     } catch (error: any) {
       setErrors({ general: error.message || 'An error occurred. Please try again.' });

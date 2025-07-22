@@ -1,6 +1,45 @@
 import React from 'react';
 import { Building, Users, TrendingUp, Award, MapPin, Calendar } from 'lucide-react';
-import { companyInfo } from '../data/mockData';
+
+const companyInfo = {
+  history: {
+    founded: '1949',
+    founder: 'Peter and Fred Asquith',
+    headquarters: 'Leeds, England',
+    timeline: [
+      { year: '1949', event: 'First store opened in Pontefract by Peter and Fred Asquith' },
+      { year: '1965', event: 'Company went public on the London Stock Exchange' },
+      { year: '1999', event: 'Acquired by Walmart, becoming part of the world\'s largest retailer' },
+      { year: '2021', event: 'Acquired by Mohsin and Zuber Issa alongside TDR Capital' },
+      { year: '2024', event: 'Continues to serve millions of customers across the UK' }
+    ]
+  },
+  financials: {
+    revenue: '£23.2 billion',
+    employees: '145,000+',
+    stores: '630+',
+    marketShare: '14.9%'
+  },
+  customerBase: {
+    weeklyCustomers: '18.7 million',
+    onlineCustomers: '5.2 million',
+    loyaltyMembers: '12.3 million',
+    demographics: {
+      familyFocused: '65%',
+      youngProfessionals: '25%',
+      seniors: '10%'
+    }
+  },
+  structure: {
+    ceo: 'Mohsin Issa',
+    divisions: [
+      { name: 'Retail Operations', head: 'Simon Gregg', employees: '120,000' },
+      { name: 'Online & Digital', head: 'Simon Gregg', employees: '8,000' },
+      { name: 'Supply Chain', head: 'Anthony Hemmerdinger', employees: '15,000' },
+      { name: 'Corporate Services', head: 'Various Directors', employees: '2,000' }
+    ]
+  }
+};
 
 const About: React.FC = () => {
   return (

@@ -18,6 +18,7 @@ class Product(Base):
     category = Column(String, nullable=False)
     image = Column(String)
     description = Column(String)
+    price = Column(Float)
 
     retailers = relationship("Retailer", back_populates="product")
     cart_items = relationship("CartItem", back_populates="product")
@@ -31,6 +32,7 @@ class Retailer(Base):
     rating = Column(Float)
     delivery_options = Column(String)
     product_id = Column(Integer, ForeignKey("products.id"))
+    price = Column(Float)
 
     product = relationship("Product", back_populates="retailers")
 

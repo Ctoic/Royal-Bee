@@ -1,4 +1,4 @@
-const API_URL = 'http://127.0.0.1:8000';
+export const API_URL = 'http://127.0.0.1:8000';
 
 export async function registerUser(email: string, name: string, password: string) {
   const response = await fetch(`${API_URL}/register`, {
@@ -25,8 +25,9 @@ export async function loginUser(email: string, password: string) {
 }
 
 export async function getProducts(token?: string) {
+  const authToken = token || localStorage.getItem('token');
   const response = await fetch(`${API_URL}/products`, {
-    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
   });
   if (!response.ok) {
     throw new Error('Failed to fetch products');
@@ -34,12 +35,26 @@ export async function getProducts(token?: string) {
   return response.json();
 }
 
-export async function getProfile(token: string) {
+export async function getProfile(token?: string) {
+  const authToken = token || localStorage.getItem('token');
   const response = await fetch(`${API_URL}/me`, {
-    headers: { 'Authorization': `Bearer ${token}` }
+    headers: { 'Authorization': `Bearer ${authToken}` }
   });
   if (!response.ok) {
     throw new Error('Failed to fetch profile');
+  }
+  return response.json();
+}
+
+export async function submitOrder(order: any, token?: string) {
+  const authToken = token || localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/api/orders`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}) },
+    body: JSON.stringify(order)
+  });
+  if (!response.ok) {
+    throw new Error('Failed to place order');
   }
   return response.json();
 } 
