@@ -1,6 +1,28 @@
 import React from 'react';
 import { Leaf, Recycle, Truck, Factory, Award, TrendingDown, Users, Globe } from 'lucide-react';
-import { sustainabilityData } from '../data/mockData';
+
+const sustainabilityData = {
+  carbonFootprint: {
+    reduction: '35%',
+    target: '50% by 2030',
+    initiatives: [
+      'Renewable energy in all stores',
+      'Electric delivery fleet',
+      'Sustainable packaging',
+      'Local sourcing programs'
+    ]
+  },
+  supplierNetwork: {
+    localSuppliers: '75%',
+    sustainableSourcing: '88%',
+    certifications: ['Fair Trade', 'Organic', 'RSPCA Assured', 'FSC Certified']
+  },
+  wasteReduction: {
+    foodWaste: '40% reduction',
+    packaging: '30% reduction',
+    recycling: '95% of waste recycled'
+  }
+};
 
 const Sustainability: React.FC = () => {
   const impactAreas = [

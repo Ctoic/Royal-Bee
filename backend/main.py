@@ -1,6 +1,6 @@
 import logging
 logging.basicConfig(level=logging.INFO)
-from fastapi import FastAPI, Depends, HTTPException, status, Body, Path
+from fastapi import FastAPI, Depends, HTTPException, status, Body, Path, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
@@ -47,15 +47,19 @@ def list_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
     return crud.get_products(db, skip=skip, limit=limit)
 
 @app.post("/api/orders", response_model=schemas.OrderOut)
-def create_order(order: schemas.OrderCreate = Body(...), db: Session = Depends(get_db)):
-    logging.info(f"Received order: {order}")
+async def create_order(request: Request, db: Session = Depends(get_db)):
+    body = await request.body()
+    logging.info(f"Raw order request body: {body.decode()}")
     try:
-        result = crud.create_order(db, order)
+        order_json = await request.json()
+        logging.info(f"Parsed order JSON: {order_json}")
+        order_obj = schemas.OrderCreate(**order_json)
+        result = crud.create_order(db, order_obj)
         logging.info(f"Order created: {result.id}")
         return result
     except Exception as e:
         logging.error(f"Order creation failed: {e}")
-        raise HTTPException(status_code=500, detail="Order creation failed")
+        raise HTTPException(status_code=422, detail=f"Order creation failed: {e}")
 
 @app.get("/api/orders", response_model=List[schemas.OrderOut])
 def get_orders(userId: int, db: Session = Depends(get_db)):

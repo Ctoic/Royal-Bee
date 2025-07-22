@@ -3,7 +3,7 @@ import { googleLogout } from '@react-oauth/google';
 import { registerUser, loginUser } from '../api';
 
 interface User {
-  id: string;
+  id: number | string;
   email: string;
   name: string;
   joinDate: string;
