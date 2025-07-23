@@ -59,7 +59,8 @@ const Profile: React.FC = () => {
   const totalSpent = orders.reduce((sum, order) => sum + order.total, 0);
   const totalOrders = orders.length;
 
-  const TabButton = ({ id, label, icon: Icon }) => (
+  type TabButtonProps = { id: string; label: string; icon: React.ElementType };
+  const TabButton: React.FC<TabButtonProps> = ({ id, label, icon: Icon }) => (
     <button
       onClick={() => setActiveTab(id)}
       className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
@@ -202,11 +203,11 @@ const Profile: React.FC = () => {
                   <Receipt className="w-6 h-6 text-blue-600 mr-2" />
                   Order History
                 </h3>
-                {loading ? (
+      {loading ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   </div>
-                ) : orders.length === 0 ? (
+      ) : orders.length === 0 ? (
                   <div className="text-center py-12">
                     <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h4 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h4>
@@ -214,7 +215,7 @@ const Profile: React.FC = () => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {orders.map(order => (
+          {orders.map(order => (
                       <div key={order.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start mb-4">
                           <div>
@@ -250,7 +251,7 @@ const Profile: React.FC = () => {
                         <div>
                           <h5 className="font-medium text-gray-800 mb-2">Items Ordered</h5>
                           <div className="space-y-2">
-                            {order.items.map((item, idx) => (
+                {order.items.map((item, idx) => (
                               <div key={idx} className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
                                 <div>
                                   <span className="font-medium text-gray-900">{item.product_name}</span>
@@ -390,11 +391,11 @@ const Profile: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Reward Points</span>
-                  <span className="font-semibold text-gray-900">1,250</span>
+                  <span className="font-semibold text-gray-900">{user.points}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Next Reward</span>
-                  <span className="text-blue-600 font-medium">250 points</span>
+                  <span className="text-blue-600 font-medium">{user.points ? 250 - (user.points % 250) : 250} points</span>
                 </div>
               </div>
             </div>
@@ -431,4 +432,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;
+export default Profile; 
