@@ -41,8 +41,15 @@ def create_order(db: Session, order: schemas.OrderCreate):
             price=item.price
         )
         db.add(db_item)
+    # Award points: 2 points for every 10 euros spent
+    user = db.query(models.User).filter(models.User.id == order.user_id).first()
+    if user:
+        points_awarded = int(order.total // 10) * 2
+        user.points = (user.points or 0) + points_awarded
     db.commit()
     db.refresh(db_order)
+    # Optionally, return points_awarded for frontend display
+    # return db_order, points_awarded
     return db_order
 
 def get_orders_by_user(db: Session, user_id: int):

@@ -4,12 +4,14 @@ from typing import Optional, List
 class UserBase(BaseModel):
     email: str
     name: str
+    points: int = 0
 
 class UserCreate(UserBase):
     password: str
 
 class UserOut(UserBase):
     id: int
+    points: int
     class Config:
         orm_mode = True
 

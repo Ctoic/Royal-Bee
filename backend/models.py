@@ -9,6 +9,8 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     name = Column(String, nullable=False)
 
+    points = Column(Integer, default=0)
+
     cart_items = relationship("CartItem", back_populates="user")
 
 class Product(Base):

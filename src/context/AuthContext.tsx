@@ -7,6 +7,7 @@ interface User {
   email: string;
   name: string;
   joinDate: string;
+  points: number;
 }
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   googleLogin: (profile: { sub: string; email: string; name: string }) => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -64,7 +66,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: profile.sub,
       email: profile.email,
       name: profile.name,
-      joinDate: new Date().toISOString()
+      joinDate: new Date().toISOString(),
+      points: 0 // Initialize points for Google login
     };
     setUser(googleUser);
     localStorage.setItem('user', JSON.stringify(googleUser));
@@ -75,7 +78,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await registerUser(email, name, password);
       return await login(email, password);
     } catch (e) {
-      return false;
+    return false;
     }
   };
 
@@ -87,6 +90,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     googleLogout();
   };
 
+  const refreshUser = async () => {
+    if (!token) return;
+    const response = await fetch('http://127.0.0.1:8000/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) {
+      const profile = await response.json();
+      setUser(profile);
+      localStorage.setItem('user', JSON.stringify(profile));
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -95,7 +110,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       register,
       logout,
       isAuthenticated: !!user,
-      googleLogin // add googleLogin to context
+      googleLogin,
+      refreshUser
     }}>
       {children}
     </AuthContext.Provider>
