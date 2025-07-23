@@ -13,7 +13,7 @@ const paymentOptions = [
 
 const Checkout: React.FC = () => {
   const { items, getTotalPrice, clearCart } = useCart();
-  const { user, token } = useAuth();
+  const { user, token, refreshUser } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -60,6 +60,7 @@ const Checkout: React.FC = () => {
       };
       const data = await submitOrder(orderPayload, token || undefined);
       setOrder(data); // Save order for confirmation screen
+      await refreshUser(); // Update user points after order
       setTimeout(() => clearCart(), 500); // Clear cart after confirmation is shown
     } catch (err: any) {
       setError(err.message || 'Checkout failed');
