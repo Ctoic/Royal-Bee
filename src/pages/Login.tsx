@@ -31,7 +31,7 @@ const Login: React.FC = () => {
         // Login
         const success = await login(formData.email, formData.password);
         if (success) {
-          navigate('/');
+        navigate('/');
         } else {
           setErrors({ general: 'Login failed. Please try again.' });
         }
@@ -46,7 +46,7 @@ const Login: React.FC = () => {
         // Auto-login after registration
         const success = await login(formData.email, formData.password);
         if (success) {
-          navigate('/');
+        navigate('/');
         } else {
           setErrors({ general: 'Registration succeeded but login failed.' });
         }
