@@ -2,8 +2,10 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 class UserBase(BaseModel):
+    username: str | None = None
     email: str
     name: str
+    role: str = 'customer'
     points: int = 0
 
 class UserCreate(UserBase):

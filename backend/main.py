@@ -1,6 +1,6 @@
 import logging
 logging.basicConfig(level=logging.INFO)
-from fastapi import FastAPI, Depends, HTTPException, status, Body, Path, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Body, Path, Request, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
@@ -8,6 +8,9 @@ from . import models, schemas, crud, auth, database
 from .database import engine, get_db
 from fastapi.middleware.cors import CORSMiddleware
 from jose import JWTError, jwt
+from .auth import hash_password, verify_password, create_access_token, get_current_admin_user
+from datetime import datetime, timedelta
+from sqlalchemy import func, text
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -17,7 +20,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your frontend URL
+    allow_origins=["http://localhost:5173"],  # Only allow frontend dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -121,3 +124,86 @@ def delete_product(product_id: int = Path(...), db: Session = Depends(get_db)):
     db.delete(db_product)
     db.commit()
     return {"detail": "Product deleted"}
+
+@app.post("/admin/login")
+def admin_login(data: dict = Body(...), db: Session = Depends(get_db), response: Response = None):
+    username = data.get("username")
+    # password = data.get("password")  # Ignore password for now
+    user = db.query(models.User).filter(models.User.username == username).first()
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=401, detail="Invalid credentials or not admin")
+    from .auth import create_access_token
+    token = create_access_token({"sub": user.id, "role": user.role})
+    # Set HttpOnly cookie
+    if response is not None:
+        response.set_cookie(key="admin_access_token", value=token, httponly=True, max_age=900)
+    return {"access_token": token, "token_type": "bearer"}
+
+@app.get("/admin/me")
+def admin_me():
+    # Return a mock admin user for development
+    return {"id": 1, "username": "admin", "role": "admin", "email": "admin@royalbee.com"}
+
+@app.get("/admin/secret")
+def admin_secret():
+    return {"message": f"Hello, admin! (dev mode)"}
+
+@app.get("/admin/users")
+def admin_list_users(db: Session = Depends(get_db)):
+    return db.query(models.User).all()
+
+@app.get("/admin/orders")
+def admin_list_orders(db: Session = Depends(get_db)):
+    return db.query(models.Order).all()
+
+@app.get("/admin/metrics")
+def admin_metrics(db: Session = Depends(get_db)):
+    now = datetime.now()
+    today_str = now.strftime('%Y-%m-%d')
+    week_ago = now - timedelta(days=7)
+    week_ago_str = week_ago.strftime('%Y-%m-%d')
+
+    total_users = db.query(models.User).count()
+    total_products = db.query(models.Product).count()
+    total_stores = db.query(models.Retailer.name).distinct().count()
+    orders_today = db.query(models.Order).filter(models.Order.date.like(f"{today_str}%")).count()
+    orders_this_week = db.query(models.Order).filter(models.Order.date >= week_ago_str).count()
+    revenue = db.query(func.sum(models.Order.total)).scalar() or 0
+    delivery_income = 0  # Placeholder, unless you have a field for this
+
+    # Top 5 selling products (by order items)
+    top_products = db.execute(
+        text("""
+        SELECT product_name, SUM(quantity) as sold
+        FROM order_items
+        GROUP BY product_name
+        ORDER BY sold DESC
+        LIMIT 5
+        """)
+    ).fetchall()
+    top_products = [{"name": row[0], "sold": row[1]} for row in top_products]
+
+    # Low stock alerts (products with < 5 in stock, if you have a stock field)
+    low_stock = []  # Placeholder, unless you have a stock field
+
+    # Unfulfilled orders (if you have a status field, otherwise show all)
+    unfulfilled_orders = db.query(models.Order).all()
+    unfulfilled_orders = [
+        {"id": o.id, "customer": o.user_id, "total": o.total} for o in unfulfilled_orders
+    ]
+
+    return {
+        "totalUsers": total_users,
+        "totalProducts": total_products,
+        "totalStores": total_stores,
+        "ordersToday": orders_today,
+        "ordersThisWeek": orders_this_week,
+        "activeUsers": 0,  # Placeholder
+        "uptime": "99.99%",  # Placeholder
+        "latency": "120ms",  # Placeholder
+        "revenue": revenue,
+        "deliveryIncome": delivery_income,
+        "topProducts": top_products,
+        "lowStock": low_stock,
+        "unfulfilledOrders": unfulfilled_orders,
+    }
