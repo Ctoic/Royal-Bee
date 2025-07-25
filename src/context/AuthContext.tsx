@@ -8,6 +8,7 @@ interface User {
   name: string;
   joinDate: string;
   points: number;
+  role: string;
 }
 
 interface AuthContextType {
@@ -67,7 +68,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       email: profile.email,
       name: profile.name,
       joinDate: new Date().toISOString(),
-      points: 0 // Initialize points for Google login
+      points: 0, // Initialize points for Google login
+      role: 'customer' // Default role for Google login
     };
     setUser(googleUser);
     localStorage.setItem('user', JSON.stringify(googleUser));

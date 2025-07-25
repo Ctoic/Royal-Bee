@@ -92,12 +92,12 @@ const Checkout: React.FC = () => {
           <div className="mb-4">
             <h3 className="font-semibold mb-2">Items</h3>
             <ul className="text-sm text-gray-700">
-              {order.items.map((item: any, idx: number) => (
-                <li key={idx}>
+          {order.items.map((item: any, idx: number) => (
+            <li key={idx}>
                   {item.product_name} x {item.quantity} ({item.retailer}) - £{(item.price * item.quantity).toFixed(2)}
-                </li>
-              ))}
-            </ul>
+            </li>
+          ))}
+        </ul>
           </div>
           <button
             onClick={() => navigate('/profile')}
@@ -154,20 +154,20 @@ const Checkout: React.FC = () => {
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              {paymentOptions.map(option => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
+            {paymentOptions.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
           </div>
           <div className="bg-gray-50 rounded-lg p-4 mb-2">
             <h3 className="font-semibold mb-2">Order Summary</h3>
             <ul className="text-sm text-gray-700 mb-2">
-              {items.map((item, idx) => (
-                <li key={idx}>
+          {items.map((item, idx) => (
+            <li key={idx}>
                   {item.product.name} x {item.quantity} ({item.retailer}) - £{(item.price * item.quantity).toFixed(2)}
-                </li>
-              ))}
-            </ul>
+            </li>
+          ))}
+        </ul>
             <div className="flex justify-between font-semibold text-lg">
               <span>Total</span>
               <span>£{getTotalPrice().toFixed(2)}</span>
@@ -181,7 +181,7 @@ const Checkout: React.FC = () => {
           >
             {loading ? 'Processing...' : 'Place Order'}
           </button>
-        </form>
+      </form>
       </div>
     </div>
   );

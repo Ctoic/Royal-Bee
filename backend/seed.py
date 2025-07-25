@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from sqlalchemy.orm import Session
 from backend.database import engine, SessionLocal
 from backend import models
+from .auth import hash_password
 
 # Sample data (copy from mockData.ts, adapted to Python)
 PRODUCTS = [
@@ -106,6 +107,20 @@ def seed():
         db.query(models.Retailer).delete()
         db.query(models.Product).delete()
         db.commit()
+
+        # Create initial admin user if not exists
+        admin = db.query(models.User).filter(models.User.username == 'admin').first()
+        if not admin:
+            admin_user = models.User(
+                username='admin',
+                email='admin@royalbee.com',
+                name='Admin',
+                hashed_password=hash_password('admin123'),
+                role='admin',
+                points=0
+            )
+            db.add(admin_user)
+            db.commit()
 
         for prod in PRODUCTS:
             best_price = min([r["price"] for r in prod["retailers"]]) if prod["retailers"] else None

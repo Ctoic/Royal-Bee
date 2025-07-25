@@ -187,13 +187,13 @@ const Home: React.FC = () => {
                 <p className="text-xl md:text-2xl mb-8 text-green-100 max-w-3xl">
                   Get the freshest produce at unbeatable prices with our price comparison tool.
                 </p>
-                <Link
-                  to="/comparison"
+                  <Link
+                    to="/comparison"
                   className="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors inline-flex items-center"
-                >
+                  >
                   <Search className="w-5 h-5 mr-2" />
                   Start Comparing Prices
-                </Link>
+                  </Link>
               </div>
             </div>
           </div>
@@ -215,14 +215,14 @@ const Home: React.FC = () => {
                 <p className="text-xl md:text-2xl mb-8 text-green-100 max-w-3xl">
                   Limited time offers on your favorite products across all retailers.
                 </p>
-                <Link
+                  <Link
                   to="/deals"
                   className="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors inline-flex items-center"
-                >
+                  >
                   <Percent className="w-5 h-5 mr-2" />
                   View All Deals
-                </Link>
-              </div>
+                  </Link>
+                </div>
             </div>
           </div>
 
@@ -255,25 +255,25 @@ const Home: React.FC = () => {
           </div>
 
           {/* Carousel Controls */}
-          <button 
-            onClick={prevSlide}
+        <button
+          onClick={prevSlide}
             className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 text-white p-2 rounded-full hover:bg-opacity-50 transition-all"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button 
-            onClick={nextSlide}
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          onClick={nextSlide}
             className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 text-white p-2 rounded-full hover:bg-opacity-50 transition-all"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
 
           {/* Indicators */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
             {[0, 1, 2].map((index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
                 className={`w-3 h-3 rounded-full ${currentSlide === index ? 'bg-white' : 'bg-white bg-opacity-50'}`}
               />
             ))}
@@ -295,7 +295,7 @@ const Home: React.FC = () => {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
             {categories.map((category, index) => (
-              <Link 
+              <Link
                 to={`/category/${category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
                 key={index}
                 className="group relative overflow-hidden rounded-lg aspect-square"
@@ -327,7 +327,7 @@ const Home: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+            </div>
       </section>
 
       {/* Features Section */}
@@ -386,8 +386,8 @@ const Home: React.FC = () => {
                   <div className="flex items-center mb-2">
                     <div className="flex text-yellow-400">
                       {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
+                        <Star
+                          key={i}
                           className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-current' : ''}`}
                         />
                       ))}
@@ -467,7 +467,7 @@ const Home: React.FC = () => {
                         <ShoppingCart className="w-4 h-4" />
                       </button>
                     </div>
-                  </div>
+                </div>
                 </Link>
               </div>
             ))}
